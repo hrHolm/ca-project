@@ -45,7 +45,6 @@ pipeline {
 
       }
     }
-
     stage('Dockerize Application') {
       when {
         branch 'master'
@@ -63,25 +62,43 @@ pipeline {
         sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
         sh 'sh/docker-push.sh'
       }
-    }
-    stage('Deploy') {
-      when {
-        branch 'master'
-      }
-      options {
-        skipDefaultCheckout(true)
-      }
-      steps {
-        unstash 'code'
-        sshagent(credentials : ['ssh_login']) {
-            sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.202.204 "echo hello"'
-            sh 'scp ./docker-compose.yml ubuntu@34.78.202.204:./'
-            sh 'ssh ubuntu@34.78.202.204 "docker pull fholm/codechan:latest"'
-            sh 'ssh ubuntu@34.78.202.204 "bash -s" < sh/deploy.sh'
+    }  
+    stage('Parallel Deployment') {
+      parallel {
+        stage('Deploy Production') {
+          when {
+            branch 'master'
+          }
+          steps {
+            unstash 'code'
+            sshagent(credentials : ['ssh_login']) {
+                sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.121.112 "echo hello"'
+                sh 'scp ./docker-compose.yml ubuntu@34.78.121.112:./'
+                sh 'ssh ubuntu@34.78.121.112 "docker pull fholm/codechan:latest"'
+                sh 'ssh ubuntu@34.78.121.112 "bash -s" < sh/deploy.sh'
+            }
+          }
+          options {
+            skipDefaultCheckout(true)
+          }
         }
-      }
-      options {
-        skipDefaultCheckout(true)
+        stage('Deploy Test') {
+          when { 
+            branch: 'test/*' 
+          }
+          steps {
+            unstash 'code'
+            sshagent(credentials : ['ssh_login']) {
+                sh 'ssh -o StrictHostKeyChecking=no ubuntu@35.195.90.84 "echo hello"'
+                sh 'scp ./docker-compose.yml ubuntu@35.195.90.84:./'
+                sh 'ssh ubuntu@35.195.90.84 "docker pull fholm/codechan:latest"'
+                sh 'ssh ubuntu@35.195.90.84 "bash -s" < sh/deploy.sh'
+            }
+          }
+          options {
+            skipDefaultCheckout(true)
+          }
+        }
       }
     }
   }
