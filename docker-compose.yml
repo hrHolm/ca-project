@@ -5,8 +5,4 @@ services:
     ports: 
       - 5000:5000
     volumes:
-      - type: 'bind'
-        source: 'app.db'
-        target: 'project/app.db'
-        volume:
-          nocopy: true
+      - "./app.db:./project/app.db"
