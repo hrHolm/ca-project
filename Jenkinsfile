@@ -49,9 +49,9 @@ pipeline {
         // Run the build-docker script.
         sh 'chmod +x ./sh/*'
         sh 'ls sh/'
-        sh './sh/docker-build.sh'
+        sh 'sh/docker-build.sh'
         sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
-        sh './sh/docker-push.sh'
+        sh 'sh/docker-push.sh'
       }
       options {
         skipDefaultCheckout(true)
