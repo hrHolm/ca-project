@@ -1,23 +1,25 @@
 pipeline {
   agent any
-  environment {
-    docker_username = 'fholm'
-  }
   stages {
     stage('Clone Down') {
       steps {
         stash(excludes: '.git/', name: 'code')
       }
     }
+
     stage('Parallel Execution') {
       parallel {
         stage('Create Artifact') {
+          options {
+            skipDefaultCheckout(true)
+          }
           steps {
             sh 'echo Artifact'
             unstash 'code'
-          }
-          options {
-            skipDefaultCheckout(true)
+            sh 'mkdir archive'
+            sh 'echo test > archive/test.txt'
+            zip(zipFile: 'test.zip', dir: 'archive')
+            archiveArtifacts(artifacts: 'test.zip', fingerprint: true)
           }
         }
 
@@ -26,35 +28,42 @@ pipeline {
             docker {
               image 'python:rc-alpine'
             }
+
+          }
+          options {
+            skipDefaultCheckout(true)
           }
           steps {
             unstash 'code'
             sh 'pip install -r ./requirements.txt'
             sh 'python ./tests.py'
           }
-          options {
-            skipDefaultCheckout(true)
-          }
         }
+
       }
     }
+
     stage('Dockerize Application') {
-      when { branch "master" }
+      when {
+        branch 'master'
+      }
       environment {
-        // Retrieve credentials from the Jenkins server
         DOCKERCREDS = credentials('docker_login')
+      }
+      options {
+        skipDefaultCheckout(true)
       }
       steps {
         unstash 'code'
-        // Run the build-docker script.
         sh 'chmod +x ./sh/*'
         sh 'sh/docker-build.sh'
         sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
         sh 'sh/docker-push.sh'
       }
-      options {
-        skipDefaultCheckout(true)
-      }
     }
+
+  }
+  environment {
+    docker_username = 'fholm'
   }
 }
