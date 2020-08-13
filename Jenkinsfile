@@ -1,22 +1,33 @@
 pipeline {
   agent any
   stages {
-    stage('Create Artifact') {
+    stage('Clone Down') {
+      steps {
+        stash(excludes: '.git/', name: 'code')
+      }
+    }
+    stage('Parallel Execution') {
       parallel {
         stage('Create Artifact') {
           steps {
-            sh 'echo hello'
+            sh 'echo Artifact'
+            unstash 'code'
+          }
+          options {
+            skipDefaultCheckout(true)
           }
         }
 
         stage('Dockerize Application') {
           steps {
-            sh 'echo yo'
+            sh 'echo Dockerize'
+            sh 'unstash code'
+          }
+          options {
+            skipDefaultCheckout(true)
           }
         }
-
       }
     }
-
   }
 }
