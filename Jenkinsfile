@@ -32,7 +32,6 @@ pipeline {
             docker {
               image 'python:rc-alpine'
             }
-
           }
           options {
             skipDefaultCheckout(true)
@@ -74,9 +73,9 @@ pipeline {
         sshagent(credentials : ['ssh_login']) {
             sh 'ssh -o StrictHostKeyChecking=no ubuntu@34.78.202.204 "echo hello"'
             sh 'scp ./docker-compose.yml ubuntu@34.78.202.204:./'
+            sh 'ssh ubuntu@34.78.202.204 "docker pull fholm/codechan:latest"'
             sh 'ssh ubuntu@34.78.202.204 "bash -s" < sh/deploy.sh'
         }
-        sh 'ls -la'
       }
     }
 
