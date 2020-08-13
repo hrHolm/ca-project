@@ -22,7 +22,7 @@ pipeline {
               unstash 'code'
             }
 
-            zip(zipFile: 'code.zip', dir: 'archive', glob: '**/**.py|**/**.html')
+            zip(zipFile: 'code.zip', dir: 'archive', glob: '**/**.py, **/**.html')
             archiveArtifacts(artifacts: 'code.zip', fingerprint: true)
           }
         }
@@ -98,6 +98,7 @@ pipeline {
             //sh 'ssh ubuntu@34.78.202.204 "bash -s" < sh/deploy.sh'
             sh 'echo doesnt work yet'
         }
+
       }
     }
 
