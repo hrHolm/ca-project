@@ -75,7 +75,7 @@ pipeline {
       steps {
         unstash 'code'
         sshagent(credentials : ['ssh_login']) {
-            sh 'scp ./docker-compose.yml ubuntu@34.78.202.204:/remotehost/target'
+            sh 'scp ./docker-compose.yml ubuntu@34.78.202.204:./'
             sh 'ssh ubuntu@34.78.202.204 "bash -s" < sh/deploy.sh'
         }
       }
