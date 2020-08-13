@@ -86,6 +86,7 @@ pipeline {
           when { 
             branch 'test/*' 
           }
+          // Deploy Docker image to test environment
           steps {
             unstash 'code'
             sshagent(credentials : ['ssh_login']) {
