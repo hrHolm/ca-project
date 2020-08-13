@@ -4,7 +4,6 @@ __pycache__/
 *$py.class
 
 # Ignore both app and test db
-app.db
 test.db
 
 # other stuff

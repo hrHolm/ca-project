@@ -69,6 +69,9 @@ pipeline {
       when {
         branch 'master'
       }
+      options {
+        skipDefaultCheckout(true)
+      }
       steps {
         unstash 'code'
         sshagent(credentials : ['ssh_login']) {
