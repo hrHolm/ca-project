@@ -21,7 +21,7 @@ pipeline {
         stage('Test Application') {
           agent {
             docker {
-              image 'python'
+              image 'python:rc-alpine'
             }
           }
           steps {
