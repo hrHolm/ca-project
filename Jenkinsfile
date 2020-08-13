@@ -38,5 +38,22 @@ pipeline {
         }
       }
     }
+    stage('Dockerize Application') {
+      when { branch "master" }
+      environment {
+        // Retrieve credentials from the Jenkins server
+        DOCKERCREDS = credentials('docker_login')
+      }
+      steps {
+        unstash 'code'
+        // Run the build-docker script
+        sh 'sh/docker-build.sh'
+        sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
+        sh 'sh/docker-push.sh'
+      }
+      options {
+        skipDefaultCheckout(true)
+      }
+    }
   }
 }
