@@ -76,7 +76,7 @@ pipeline {
             sh 'scp ./docker-compose.yml ubuntu@34.78.202.204:./'
             sh 'ssh ubuntu@34.78.202.204 "bash -s" < sh/deploy.sh'
         }
-
+        sh 'ls -la'
       }
     }
 
