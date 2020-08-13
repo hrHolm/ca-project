@@ -65,6 +65,25 @@ pipeline {
         sh 'sh/docker-push.sh'
       }
     }
+    def remote = [:]
+    remote.name = "host"
+    remote.host = "34.78.202.204"
+    remote.allowAnyHosts = true
+    node {
+        withCredentials([usernamePassword(credentialsId: 'ssh_login', passwordVariable: '', usernameVariable: 'ubuntu')]) {
+            remote.user = userName
+            remote.password = password
+
+            stage("SSH Steps Rocks!") {
+                writeFile file: 'test.sh', text: 'ls'
+                sshCommand remote: remote, command: 'for i in {1..5}; do echo -n \"Loop \$i \"; date ; sleep 1; done'
+                sshScript remote: remote, script: 'test.sh'
+                sshPut remote: remote, from: 'test.sh', into: '.'
+                sshGet remote: remote, from: 'test.sh', into: 'test_new.sh', override: true
+                sshRemove remote: remote, path: 'test.sh'
+            }
+        }
+    }
     stage('Deploy') {
       when {
         branch 'master'
@@ -75,8 +94,9 @@ pipeline {
       steps {
         unstash 'code'
         sshagent(credentials : ['ssh_login']) {
-            sh 'scp ./docker-compose.yml ubuntu@34.78.202.204:./'
-            sh 'ssh ubuntu@34.78.202.204 "bash -s" < sh/deploy.sh'
+            //sh 'scp ./docker-compose.yml ubuntu@34.78.202.204:./'
+            //sh 'ssh ubuntu@34.78.202.204 "bash -s" < sh/deploy.sh'
+            sh 'echo doesnt work yet'
         }
       }
     }
