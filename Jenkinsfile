@@ -22,7 +22,7 @@ pipeline {
               unstash 'code'
             }
 
-            zip(zipFile: 'code.zip', dir: 'archive', glob: '**/**.py&&**/**.html')
+            zip(zipFile: 'code.zip', dir: 'archive', glob: '**/**.py|**/**.html')
             archiveArtifacts(artifacts: 'code.zip', fingerprint: true)
           }
         }
