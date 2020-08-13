@@ -80,8 +80,10 @@ pipeline {
             sh 'ssh ubuntu@34.78.202.204 "bash -s" < sh/deploy.sh'
         }
       }
+      options {
+        skipDefaultCheckout(true)
+      }
     }
-
   }
   environment {
     docker_username = 'fholm'
