@@ -18,13 +18,12 @@ pipeline {
             unstash 'code'
             sh 'mkdir archive'
             sh 'mkdir code'
-            dir(path: 'code') {
+            dir(path: 'archive') {
               unstash 'code'
             }
 
-            sh 'cp /code/config.py archive'
             sh 'echo test > archive/test.txt'
-            zip(zipFile: 'test.zip', dir: 'archive')
+            zip(zipFile: 'test.zip', dir: 'archive', glob: '**.py')
             archiveArtifacts(artifacts: 'test.zip', fingerprint: true)
           }
         }
