@@ -84,7 +84,7 @@ pipeline {
         }
         stage('Deploy Test') {
           when { 
-            branch: 'test/*' 
+            branch 'test/*' 
           }
           steps {
             unstash 'code'
