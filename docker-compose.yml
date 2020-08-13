@@ -4,5 +4,3 @@ services:
     image: fholm/codechan
     ports: 
       - 5000:5000
-    volumes:
-      - ".:/project/"
