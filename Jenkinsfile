@@ -1,5 +1,9 @@
 pipeline {
   agent any
+  def remote = [:]
+  remote.name = "host"
+  remote.host = "34.78.202.204"
+  remote.allowAnyHosts = true
   stages {
     stage('Clone Down') {
       steps {
@@ -65,10 +69,7 @@ pipeline {
         sh 'sh/docker-push.sh'
       }
     }
-    def remote = [:]
-    remote.name = "host"
-    remote.host = "34.78.202.204"
-    remote.allowAnyHosts = true
+    
     node {
         withCredentials([usernamePassword(credentialsId: 'ssh_login', passwordVariable: '', usernameVariable: 'ubuntu')]) {
             remote.user = userName
