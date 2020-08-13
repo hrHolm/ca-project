@@ -23,7 +23,7 @@ pipeline {
             }
 
             sh 'echo test > archive/test.txt'
-            zip(zipFile: 'test.zip', dir: 'archive', glob: '**/**.py')
+            zip(zipFile: 'code.zip', dir: 'archive', glob: '**/**.py&&**/**.html')
             archiveArtifacts(artifacts: 'test.zip', fingerprint: true)
           }
         }
