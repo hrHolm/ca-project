@@ -22,9 +22,8 @@ pipeline {
               unstash 'code'
             }
 
-            sh 'echo test > archive/test.txt'
             zip(zipFile: 'code.zip', dir: 'archive', glob: '**/**.py&&**/**.html')
-            archiveArtifacts(artifacts: 'test.zip', fingerprint: true)
+            archiveArtifacts(artifacts: 'code.zip', fingerprint: true)
           }
         }
 
