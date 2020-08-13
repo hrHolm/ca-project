@@ -18,10 +18,11 @@ pipeline {
           }
         }
 
-        stage('Dockerize Application') {
+        stage('Test Application') {
+          image: 'python'
           steps {
-            sh 'echo Dockerize'
             unstash 'code'
+            sh 'python ./tests.py'
           }
           options {
             skipDefaultCheckout(true)
