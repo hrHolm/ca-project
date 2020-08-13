@@ -17,9 +17,13 @@ pipeline {
             sh 'echo Artifact'
             unstash 'code'
             sh 'mkdir archive'
-            sh 'echo test > archive/test.txt'
-            zip(zipFile: 'test.zip', dir: 'archive')
-            archiveArtifacts(artifacts: 'test.zip', fingerprint: true)
+            sh 'mkdir code'
+            dir(path: 'archive') {
+              unstash 'code'
+            }
+
+            zip(zipFile: 'code.zip', dir: 'archive', glob: '**/**.py|**/**.html')
+            archiveArtifacts(artifacts: 'code.zip', fingerprint: true)
           }
         }
 
@@ -56,9 +60,9 @@ pipeline {
       steps {
         unstash 'code'
         sh 'chmod +x ./sh/*'
-        sh './sh/docker-build.sh'
+        sh 'sh/docker-build.sh'
         sh 'echo "$DOCKERCREDS_PSW" | docker login -u "$DOCKERCREDS_USR" --password-stdin'
-        sh './sh/docker-push.sh'
+        sh 'sh/docker-push.sh'
       }
     }
     stage('Deploy') {
