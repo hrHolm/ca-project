@@ -21,7 +21,7 @@ pipeline {
         stage('Dockerize Application') {
           steps {
             sh 'echo Dockerize'
-            sh 'unstash code'
+            unstash 'code'
           }
           options {
             skipDefaultCheckout(true)
