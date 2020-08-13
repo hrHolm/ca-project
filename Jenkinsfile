@@ -22,7 +22,7 @@ pipeline {
               unstash 'code'
             }
 
-            zip(zipFile: 'code.zip', dir: 'archive', glob: '**/**.py|**/**.html')
+            zip(zipFile: 'code.zip', dir: 'archive', glob: '**/**.*')
             archiveArtifacts(artifacts: 'code.zip', fingerprint: true)
           }
         }
@@ -65,6 +65,7 @@ pipeline {
         sh 'sh/docker-push.sh'
       }
     }
+
     stage('Deploy') {
       when {
         branch 'master'
@@ -74,10 +75,11 @@ pipeline {
       }
       steps {
         unstash 'code'
-        sshagent(credentials : ['ssh_login']) {
-            sh 'scp ./docker-compose.yml ubuntu@34.78.202.204:./'
-            sh 'ssh ubuntu@34.78.202.204 "bash -s" < sh/deploy.sh'
+        sshagent(credentials: ['ssh_login']) {
+          sh 'scp ./docker-compose.yml ubuntu@34.78.202.204:./'
+          sh 'ssh ubuntu@34.78.202.204 "bash -s" < sh/deploy.sh'
         }
+
       }
     }
 
