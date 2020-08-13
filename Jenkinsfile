@@ -19,7 +19,11 @@ pipeline {
         }
 
         stage('Test Application') {
-          image: 'python'
+          agent {
+            docker {
+              image 'python'
+            }
+          }
           steps {
             unstash 'code'
             sh 'python ./tests.py'
