@@ -22,7 +22,7 @@ pipeline {
               unstash 'code'
             }
 
-            sh 'cp /code/{config.py, create_db.py, downgrade_down.py, migrate_db.py, run.py, tests.py, upgrade_db.py, app.db, app/_init_.py, app/forms.py, app/models.py, app/views.py} /archive'
+            sh 'cp /code/{config.py, create_db.py, downgrade_down.py, migrate_db.py, run.py, tests.py, upgrade_db.py, app.db, app/_init_.py, app/forms.py, app/models.py, app/views.py} archive'
             sh 'echo test > archive/test.txt'
             zip(zipFile: 'test.zip', dir: 'archive')
             archiveArtifacts(artifacts: 'test.zip', fingerprint: true)
