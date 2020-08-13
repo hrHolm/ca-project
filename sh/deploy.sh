@@ -1,3 +1,3 @@
 #!/bin/bash
 docker-compose down
-docker-compose -d up
+docker-compose up -d
